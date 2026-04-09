@@ -94,7 +94,7 @@
 </div>
 
 <script>
-const questions = [
+const questions=[
   {block:"Planejamento de conteúdo",q:"Com que frequência você publica conteúdo de forma intencional e planejada?",opts:["Não tenho rotina — publico quando me lembro ou me inspiro","Às vezes planejo, mas não tenho consistência","Tenho um calendário básico e sigo com alguma regularidade","Tenho calendário editorial por plataforma com objetivos definidos"]},
   {block:"Planejamento de conteúdo",q:"Você adapta o formato e a linguagem do conteúdo para cada plataforma?",opts:["Não, publico o mesmo conteúdo em todos os lugares","Às vezes adapto, mas sem critério definido","Adapto na maioria das vezes com base no que percebo funcionar","Sim, tenho estratégia clara por plataforma com formatos e objetivos diferentes"]},
   {block:"Planejamento de conteúdo",q:"Qual é o propósito central do seu conteúdo hoje?",opts:["Ainda não sei definir claramente","Quero engajar e ganhar seguidores","Tenho um propósito definido, mas ainda não está conectado a resultados concretos","Meu conteúdo tem propósito claro, conectado à missão e a objetivos mensuráveis"]},
@@ -127,7 +127,7 @@ const questions = [
   {block:"Estrutura de time",q:"As funções da sua equipe são claramente divididas e cada pessoa sabe exatamente o que é responsável?",opts:["Não há divisão — cada um faz o que dá","Existe uma divisão informal, mas há muito sobreposição de tarefas","Há divisão básica de funções, mas ainda falta clareza em alguns pontos","Sim, cada pessoa tem função documentada, entregas definidas e responsabilidade clara"]}
 ];
 
-const levels = [
+const levels=[
   {name:"Aprendiz",color:"#D3D1C7",textColor:"#2C2C2A",badge:"Nível 1",desc:"Você está no início da jornada — e isso é ótimo! A maioria das pessoas neste estágio age por intuição, sem estratégia definida. O próximo passo é entender que intencionalidade faz toda a diferença.",steps:[{t:"Comece com um bloco",d:"Escolha um dos 9 temas do quiz e foque nele por 30 dias antes de ampliar."},{t:"Documente o que você faz",d:"Crie um caderno ou planilha simples com o que você publica e quando."},{t:"Estude referências",d:"Mapeie 3 criadores gospel que admira e observe a estratégia deles."}]},
   {name:"Operador",color:"#B5D4F4",textColor:"#0C447C",badge:"Nível 2",desc:"Você executa, mas ainda está no piloto automático. Tem consistência em alguns pontos, mas falta visão do conjunto. O desafio agora é sair do modo reativo e começar a planejar com intenção.",steps:[{t:"Monte seu calendário editorial",d:"Planeje pelo menos 2 semanas de conteúdo com antecedência, incluindo datas gospel relevantes."},{t:"Escolha 2 métricas para acompanhar",d:"Comece simples: alcance e engajamento. Registre semanalmente."},{t:"Teste um formato novo por mês",d:"Explore o que ainda não tentou — vídeo longo, podcast, e-book curto."}]},
   {name:"Explorador",color:"#9FE1CB",textColor:"#085041",badge:"Nível 3",desc:"Você já testa, questiona e experimenta — isso é muito valioso. Mas a falta de consistência ainda limita seus resultados. O momento agora é transformar aprendizados em processos.",steps:[{t:"Documente o que funciona",d:"Crie um banco de conteúdos de alto desempenho e identifique padrões de formato e tema."},{t:"Integre online e offline",d:"Planeje como seus eventos e ações presenciais alimentam o digital e vice-versa."},{t:"Crie sua primeira oferta",d:"Mesmo que simples, estruture algo que possa gerar valor e receita para sua audiência."}]},
@@ -135,8 +135,8 @@ const levels = [
   {name:"Estrategista",color:"#F5C4B3",textColor:"#712B13",badge:"Nível 5",desc:"Você pensa em escala, forma outros e gera impacto real. Está no topo da jornada — mas o verdadeiro estrategista nunca para de aprender. Seu papel agora é abrir caminho para quem vem depois.",steps:[{t:"Compartilhe o que sabe",d:"Crie conteúdo educativo que forme outros criadores no gospel."},{t:"Meça impacto além do alcance",d:"Defina métricas de transformação real — vidas, comunidades, missão."},{t:"Construa legado",d:"Pense em sistemas que funcionem sem depender exclusivamente de você."}]}
 ];
 
-let answers = new Array(questions.length).fill(null);
-let current = 0;
+let answers=new Array(questions.length).fill(null);
+let current=0;
 
 function startQuiz(){
   document.getElementById('intro-screen').style.display='none';
@@ -145,13 +145,13 @@ function startQuiz(){
 }
 
 function render(){
-  const q = questions[current];
-  document.getElementById('block-tag').textContent = q.block;
-  document.getElementById('qtext').textContent = q.q;
-  const wrap = document.getElementById('options-wrap');
+  const q=questions[current];
+  document.getElementById('block-tag').textContent=q.block;
+  document.getElementById('qtext').textContent=q.q;
+  const wrap=document.getElementById('options-wrap');
   wrap.innerHTML='';
   q.opts.forEach((o,i)=>{
-    const b = document.createElement('button');
+    const b=document.createElement('button');
     b.className='option-btn'+(answers[current]===i?' selected':'');
     b.textContent=o;
     b.onclick=()=>select(i);
@@ -159,7 +159,7 @@ function render(){
   });
   const pct=Math.round(((current+1)/questions.length)*100);
   document.getElementById('pbar').style.width=pct+'%';
-  document.getElementById('plabel').textContent=`Pergunta ${current+1} de ${questions.length}`;
+  document.getElementById('plabel').textContent='Pergunta '+(current+1)+' de '+questions.length;
   document.getElementById('btn-prev').disabled=current===0;
   const isLast=current===questions.length-1;
   const nb=document.getElementById('btn-next');
@@ -181,6 +181,24 @@ function go(dir){
   render();
 }
 
+function getBlockScores(){
+  const blocks={};const blockCount={};
+  questions.forEach((q,i)=>{
+    const b=q.block;
+    if(!blocks[b]){blocks[b]=0;blockCount[b]=0;}
+    blocks[b]+=(answers[i]===null?0:answers[i]);
+    blockCount[b]++;
+  });
+  const result={};
+  Object.keys(blocks).forEach(b=>{
+    const max=blockCount[b]*3;
+    const pct=Math.round((blocks[b]/max)*100);
+    const lbl=pct<25?'Aprendiz':pct<50?'Operador':pct<75?'Explorador':pct<90?'Produtor':'Estrategista';
+    result[b]=lbl+' ('+pct+'%)';
+  });
+  return result;
+}
+
 function showResult(){
   const total=answers.reduce((s,a)=>s+(a===null?0:a),0);
   const max=questions.length*3;
@@ -189,55 +207,52 @@ function showResult(){
   const l=levels[lvl];
   document.getElementById('quiz-screen').style.display='none';
   const rs=document.getElementById('result-screen');
-  const segs=[0,1,2,3,4].map(i=>`<div class="score-seg" style="background:${i<=lvl?l.color:'#F1EFE8'}"></div>`).join('');
-  const names=levels.map(lv=>`<div class="score-name">${lv.name}</div>`).join('');
-  const steps=l.steps.map(s=>`<div class="step-card"><strong>${s.t}</strong><p>${s.d}</p></div>`).join('');
-  rs.innerHTML=`
-    <div class="result-wrap">
-      <div class="result-badge" style="background:${l.color};color:${l.textColor}">${l.badge} — ${l.name}</div>
-      <div class="result-title">Você é um ${l.name}</div>
-      <div class="result-desc">${l.desc}</div>
-      <div class="score-bar-wrap">
-        <div class="score-levels">${segs}</div>
-        <div class="score-names">${names}</div>
-      </div>
-      <hr class="divider">
-      <div class="steps-title">Seus próximos passos</div>
-      <div>${steps}</div>
-      <hr class="divider">
-      <div class="email-box">
-        <h3>Baixe seu diagnóstico em PDF</h3>
-        <p>Preencha seu nome e e-mail para liberar o download do seu resultado completo.</p>
-        <div class="email-fields">
-          <input type="text" id="cap-name" placeholder="Seu nome"/>
-          <input type="email" id="cap-email" placeholder="Seu melhor e-mail"/>
-        </div>
-        <div class="cap-error" id="cap-error">Por favor, preencha nome e e-mail válidos.</div>
-        <button class="btn-email" onclick="submitEmail()">Baixar meu diagnóstico em PDF →</button>
-        <div class="cap-success" id="cap-success">Seu PDF está sendo gerado e o download vai iniciar em instantes!</div>
-      </div>
-      <button class="btn-restart" onclick="restart()">Refazer o quiz</button>
-    </div>`;
+  const segs=[0,1,2,3,4].map(i=>'<div class="score-seg" style="background:'+(i<=lvl?l.color:'#F1EFE8')+'"></div>').join('');
+  const names=levels.map(lv=>'<div class="score-name">'+lv.name+'</div>').join('');
+  const steps=l.steps.map(s=>'<div class="step-card"><strong>'+s.t+'</strong><p>'+s.d+'</p></div>').join('');
+  rs.innerHTML='<div class="result-wrap"><div class="result-badge" style="background:'+l.color+';color:'+l.textColor+'">'+l.badge+' — '+l.name+'</div><div class="result-title">Você é um '+l.name+'</div><div class="result-desc">'+l.desc+'</div><div class="score-bar-wrap"><div class="score-levels">'+segs+'</div><div class="score-names">'+names+'</div></div><hr class="divider"/><div class="steps-title">Seus próximos passos</div><div>'+steps+'</div><hr class="divider"/><div class="email-box"><h3>Baixe seu diagnóstico em PDF</h3><p>Preencha seu nome e e-mail para liberar o download do seu resultado completo.</p><div class="email-fields"><input type="text" id="cap-name" placeholder="Seu nome"/><input type="email" id="cap-email" placeholder="Seu melhor e-mail"/></div><div class="cap-error" id="cap-error">Por favor, preencha nome e e-mail válidos.</div><button class="btn-email" onclick="submitEmail()">Baixar meu diagnóstico em PDF →</button><div class="cap-success" id="cap-success">Seu PDF está sendo gerado, o download vai iniciar em instantes!</div></div><button class="btn-restart" onclick="restart()">Refazer o quiz</button></div>';
   rs.style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function submitEmail(){
-  const name=document.getElementById('cap-name').value.trim();
-  const email=document.getElementById('cap-email').value.trim();
+  const nameEl=document.getElementById('cap-name');
+  const emailEl=document.getElementById('cap-email');
   const err=document.getElementById('cap-error');
   const ok=document.getElementById('cap-success');
+  if(!nameEl||!emailEl)return;
+  const name=nameEl.value.trim();
+  const email=emailEl.value.trim();
   const valid=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   if(!name||!valid){err.style.display='block';return;}
   err.style.display='none';
-  document.getElementById('cap-name').disabled=true;
-  document.getElementById('cap-email').disabled=true;
+  const levelEl=document.querySelector('.result-title');
+  const level=levelEl?levelEl.textContent:'';
+  const descEl=document.querySelector('.result-desc');
+  const desc=descEl?descEl.textContent:'';
+  const stepCards=document.querySelectorAll('.step-card');
+  let stepsHtml='';
+  stepCards.forEach(s=>{
+    const t=s.querySelector('strong')?s.querySelector('strong').textContent:'';
+    const d=s.querySelector('p')?s.querySelector('p').textContent:'';
+    stepsHtml+='<div style="margin-bottom:16px"><strong style="color:#3C3489">'+t+'</strong><p style="color:#555;margin-top:4px;line-height:1.5">'+d+'</p></div>';
+  });
+  const badgeEl=document.querySelector('.result-badge');
+  const badge=badgeEl?badgeEl.textContent:'';
+  const blockScores=getBlockScores();
+  const blocksHtml=Object.keys(blockScores).map(b=>'<tr><td style="padding:6px 0;color:#888;font-size:13px">'+b+'</td><td style="padding:6px 0;font-size:13px;font-weight:600;color:#3C3489;text-align:right">'+blockScores[b]+'</td></tr>').join('');
+  const printWin=window.open('','_blank');
+  printWin.document.write('<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"/><title>Diagnóstico — '+level+'</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:"Segoe UI",sans-serif;background:#fff;color:#1a1a1a;padding:48px 56px;max-width:720px;margin:0 auto}.badge{display:inline-block;background:#CECBF6;color:#3C3489;padding:4px 16px;border-radius:99px;font-size:13px;font-weight:600;margin-bottom:16px}h1{font-size:28px;font-weight:700;margin-bottom:8px}.desc{font-size:15px;color:#555;line-height:1.7;margin-bottom:24px}.divider{border:none;border-top:1px solid #eee;margin:24px 0}.section-title{font-size:15px;font-weight:700;margin-bottom:16px;color:#1a1a1a}.name-line{font-size:14px;color:#888;margin-bottom:24px}.footer{margin-top:40px;font-size:12px;color:#aaa;text-align:center}table{width:100%;border-collapse:collapse}@media print{body{padding:32px}}</style></head><body><div class="badge">'+badge+'</div><h1>'+level+'</h1><div class="name-line">Diagnóstico de '+name+'</div><div class="desc">'+desc+'</div><hr class="divider"/><div class="section-title">Seus próximos passos</div>'+stepsHtml+'<hr class="divider"/><div class="section-title">Score por bloco temático</div><table>'+blocksHtml+'</table><hr class="divider"/><div class="footer">Quiz Estratégia Digital Gospel</div></body></html>');
+  printWin.document.close();
+  setTimeout(()=>printWin.print(),600);
+  nameEl.disabled=true;
+  emailEl.disabled=true;
   ok.style.display='block';
-      fetch('https://formspree.io/f/xqegojye', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({name, email, level: document.querySelector('.result-title').textContent})
-    });
+  fetch('https://formspree.io/f/xqegojye',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify(Object.assign({nome:name,email:email,nivel_geral:level},blockScores))
+  }).catch(()=>{});
 }
 
 function restart(){

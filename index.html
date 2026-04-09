@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Quiz — Estratégia Digital Gospel</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#F5F4F0;color:#1a1a1a;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem}
+  .card{background:#fff;border-radius:16px;box-shadow:0 2px 24px rgba(0,0,0,0.08);max-width:680px;width:100%;padding:2rem 2rem 2.5rem}
+  .intro{text-align:center;padding:1rem 0 2rem}
+  .intro h1{font-size:24px;font-weight:600;margin-bottom:0.75rem;line-height:1.3}
+  .intro p{font-size:15px;color:#555;line-height:1.6;max-width:480px;margin:0 auto 1.5rem}
+  .intro-meta{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.75rem}
+  .meta-item{font-size:13px;color:#888;display:flex;align-items:center;gap:4px}
+  .btn-start{background:#7F77DD;color:#fff;border:none;border-radius:10px;padding:0.75rem 2rem;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.15s}
+  .btn-start:hover{background:#534AB7}
+  .progress-bar-bg{background:#EEEDFE;border-radius:99px;height:6px;margin-bottom:0.5rem}
+  .progress-bar-fill{height:6px;border-radius:99px;background:#7F77DD;transition:width 0.4s}
+  .progress-label{font-size:13px;color:#888;margin-bottom:1.5rem}
+  .block-tag{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;margin-bottom:0.75rem;background:#F1EFE8;color:#888780;letter-spacing:0.03em;text-transform:uppercase}
+  .question-text{font-size:18px;font-weight:500;color:#1a1a1a;line-height:1.5;margin-bottom:1.25rem}
+  .option-btn{display:block;width:100%;text-align:left;padding:0.8rem 1rem;margin-bottom:0.6rem;border:1.5px solid #E5E3DC;border-radius:10px;background:#fff;color:#1a1a1a;font-size:15px;cursor:pointer;transition:border-color 0.15s,background 0.15s;line-height:1.4;font-family:inherit}
+  .option-btn:hover{border-color:#AFA9EC;background:#EEEDFE}
+  .option-btn.selected{border-color:#7F77DD;background:#EEEDFE;color:#3C3489;font-weight:500}
+  .nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem}
+  .btn-nav{padding:0.5rem 1.25rem;border:1.5px solid #E5E3DC;border-radius:10px;background:#fff;color:#1a1a1a;font-size:14px;cursor:pointer;font-family:inherit;transition:background 0.15s}
+  .btn-nav:hover:not(:disabled){background:#F5F4F0}
+  .btn-nav:disabled{opacity:0.3;cursor:default}
+  .btn-next{background:#7F77DD;color:#fff;border-color:#7F77DD;font-weight:600}
+  .btn-next:hover:not(:disabled){background:#534AB7}
+  .result-wrap{text-align:center;padding:0.5rem 0}
+  .result-badge{display:inline-block;padding:0.4rem 1.25rem;border-radius:99px;font-size:13px;font-weight:600;margin-bottom:1rem;letter-spacing:0.02em}
+  .result-title{font-size:28px;font-weight:700;margin-bottom:0.5rem;color:#1a1a1a}
+  .result-desc{font-size:15px;color:#555;line-height:1.7;margin-bottom:1.5rem}
+  .score-bar-wrap{margin:1.25rem 0}
+  .score-levels{display:flex;gap:4px;margin-bottom:0.4rem}
+  .score-seg{flex:1;height:8px;border-radius:99px;background:#F1EFE8}
+  .score-names{display:flex;gap:4px}
+  .score-name{flex:1;font-size:10px;color:#aaa;text-align:center}
+  .divider{border:none;border-top:1px solid #F1EFE8;margin:1.5rem 0}
+  .steps-title{font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:0.75rem;text-align:left}
+  .step-card{background:#F8F7F4;border-radius:10px;padding:0.75rem 1rem;margin-bottom:0.6rem;text-align:left}
+  .step-card strong{font-size:14px;font-weight:600;color:#1a1a1a}
+  .step-card p{font-size:13px;color:#666;margin-top:3px;line-height:1.5}
+  .email-box{background:#F8F7F4;border-radius:12px;padding:1.25rem;text-align:left;margin-bottom:1rem}
+  .email-box h3{font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:4px}
+  .email-box p{font-size:13px;color:#666;margin-bottom:1rem;line-height:1.5}
+  .email-fields{display:flex;gap:8px;flex-wrap:wrap}
+  .email-fields input{flex:1;min-width:140px;padding:0.6rem 0.85rem;border:1.5px solid #E5E3DC;border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:border-color 0.15s;background:#fff;color:#1a1a1a}
+  .email-fields input:focus{border-color:#7F77DD}
+  .btn-email{margin-top:10px;width:100%;padding:0.65rem 1rem;background:#7F77DD;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.15s}
+  .btn-email:hover{background:#534AB7}
+  .cap-error{font-size:12px;color:#E24B4A;margin-top:6px;display:none}
+  .cap-success{display:none;margin-top:10px;font-size:13px;color:#1D9E75;font-weight:600}
+  .btn-restart{display:block;margin:0.5rem auto 0;padding:0.5rem 1.5rem;border:1.5px solid #E5E3DC;border-radius:10px;background:#fff;color:#1a1a1a;font-size:14px;cursor:pointer;font-family:inherit;transition:background 0.15s}
+  .btn-restart:hover{background:#F5F4F0}
+  @media(max-width:480px){
+    .card{padding:1.25rem 1rem 2rem}
+    .intro h1{font-size:20px}
+    .question-text{font-size:16px}
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div id="intro-screen">
+    <div class="intro">
+      <div style="font-size:13px;font-weight:600;color:#7F77DD;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:0.75rem">Quiz diagnóstico</div>
+      <h1>Qual é o seu nível de consciência em estratégia digital gospel?</h1>
+      <p>Responda 29 perguntas rápidas e descubra onde você está na jornada — do Aprendiz ao Estrategista.</p>
+      <div class="intro-meta">
+        <span class="meta-item">⏱ Cerca de 8 minutos</span>
+        <span class="meta-item">📋 29 perguntas</span>
+        <span class="meta-item">🎯 Resultado personalizado</span>
+      </div>
+      <button class="btn-start" onclick="startQuiz()">Começar o quiz →</button>
+    </div>
+  </div>
+
+  <div id="quiz-screen" style="display:none">
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="pbar" style="width:3%"></div></div>
+    <div class="progress-label" id="plabel">Pergunta 1 de 29</div>
+    <div class="block-tag" id="block-tag"></div>
+    <div class="question-text" id="qtext"></div>
+    <div id="options-wrap"></div>
+    <div class="nav-row">
+      <button class="btn-nav" id="btn-prev" onclick="go(-1)" disabled>← Anterior</button>
+      <button class="btn-nav btn-next" id="btn-next" onclick="go(1)" disabled>Próxima →</button>
+    </div>
+  </div>
+
+  <div id="result-screen" style="display:none"></div>
+</div>
+
+<script>
+const questions = [
+  {block:"Planejamento de conteúdo",q:"Com que frequência você publica conteúdo de forma intencional e planejada?",opts:["Não tenho rotina — publico quando me lembro ou me inspiro","Às vezes planejo, mas não tenho consistência","Tenho um calendário básico e sigo com alguma regularidade","Tenho calendário editorial por plataforma com objetivos definidos"]},
+  {block:"Planejamento de conteúdo",q:"Você adapta o formato e a linguagem do conteúdo para cada plataforma?",opts:["Não, publico o mesmo conteúdo em todos os lugares","Às vezes adapto, mas sem critério definido","Adapto na maioria das vezes com base no que percebo funcionar","Sim, tenho estratégia clara por plataforma com formatos e objetivos diferentes"]},
+  {block:"Planejamento de conteúdo",q:"Qual é o propósito central do seu conteúdo hoje?",opts:["Ainda não sei definir claramente","Quero engajar e ganhar seguidores","Tenho um propósito definido, mas ainda não está conectado a resultados concretos","Meu conteúdo tem propósito claro, conectado à missão e a objetivos mensuráveis"]},
+  {block:"Planejamento de conteúdo",q:"Como você define o que vai produzir a cada semana ou mês?",opts:["Decido na hora ou pelo que está em alta","Tenho ideias soltas, mas sem organização","Tenho um processo básico de planejamento semanal ou mensal","Tenho processo estruturado com pautas, responsáveis e datas definidas"]},
+  {block:"Estratégias de viralização",q:"Você conhece os gatilhos que fazem um conteúdo ser compartilhado no seu nicho?",opts:["Não, ainda não pensei nisso","Conheço superficialmente, mas não aplico com intencionalidade","Conheço alguns e os uso às vezes","Conheço e aplico de forma estratégica e consistente"]},
+  {block:"Estratégias de viralização",q:"Como você distribui o seu conteúdo após publicar?",opts:["Publico e espero o alcance orgânico","Compartilho no WhatsApp pessoal ou em grupos","Tenho algumas estratégias de distribuição, mas ainda não são sistemáticas","Tenho uma estratégia de distribuição multicanal com reaproveitamento de conteúdo"]},
+  {block:"Estratégias de viralização",q:"Você já teve algum conteúdo que viralizou ou teve desempenho muito acima da média?",opts:["Nunca, e não sei por quê","Sim, mas foi por acaso — não sei reproduzir","Sim, e identifiquei alguns padrões, mas ainda não domino","Sim, e consigo identificar e replicar os elementos que geraram o resultado"]},
+  {block:"Estratégias de viralização",q:"Qual é sua estratégia para crescimento orgânico de audiência?",opts:["Não tenho estratégia definida","Seguir tendências e usar hashtags","Combinação de alguns elementos, mas sem consistência","Tenho uma estratégia documentada com táticas, canais e metas de crescimento"]},
+  {block:"Vendas e infoprodutos",q:"Você já monetiza ou já pensou em monetizar seu trabalho criativo no gospel?",opts:["Nunca pensei nisso","Pensei, mas não sei por onde começar","Já tentei algo, mas ainda não obtive resultados consistentes","Sim, já tenho produto ou serviço e gero receita com isso"]},
+  {block:"Vendas e infoprodutos",q:"Você conhece o conceito de funil de vendas e já aplicou ao seu ministério ou trabalho?",opts:["Não conheço","Conheço o conceito, mas nunca apliquei","Já apliquei parcialmente, com resultados iniciais","Sim, tenho funil estruturado com etapas de atração, engajamento e conversão"]},
+  {block:"Vendas e infoprodutos",q:"Que tipo de produto ou serviço você poderia criar a partir do que já produz?",opts:["Não sei dizer","Tenho ideias vagas, mas sem estrutura","Tenho uma ou duas ideias mais claras, mas ainda não coloquei em prática","Já mapeei oportunidades e sei exatamente o que posso criar e para quem"]},
+  {block:"Vendas e infoprodutos",q:"Como você comunica o valor do que oferece para sua audiência?",opts:["Não comunico diretamente — espero que percebam","Faço de forma espontânea e sem estratégia","Já comunico com mais intenção, mas ainda sem método definido","Tenho uma proposta de valor clara e sei comunicar em diferentes contextos"]},
+  {block:"Integração online + offline",q:"Você integra suas ações digitais com eventos, cultos ou atividades presenciais?",opts:["Não, são mundos separados","Às vezes, mas de forma pontual e não planejada","Tenho algumas iniciativas integradas, mas ainda não é sistemático","Sim, tenho uma estratégia integrada online e offline com objetivos compartilhados"]},
+  {block:"Integração online + offline",q:"Quando realiza um evento presencial, você usa o digital para ampliar o impacto?",opts:["Não uso o digital para isso","Faço transmissão ao vivo, mas sem estratégia além disso","Uso algumas ferramentas, mas sem um plano estruturado","Tenho uma estratégia de amplificação digital antes, durante e depois do evento"]},
+  {block:"Integração online + offline",q:"Sua presença digital reflete o que acontece no presencial (e vice-versa)?",opts:["Não, são completamente diferentes","Existe alguma conexão, mas sem intencionalidade","Há coerência em boa parte, mas ainda falta integração em alguns pontos","Sim, construo uma narrativa integrada que conecta os dois mundos com consistência"]},
+  {block:"Dados e relatórios",q:"Com que frequência você analisa os dados das suas redes sociais ou plataformas digitais?",opts:["Nunca ou raramente","De vez em quando, sem método definido","Mensalmente, mas de forma superficial","Semanalmente ou quinzenalmente com análise estruturada e registro"]},
+  {block:"Dados e relatórios",q:"Você sabe quais métricas realmente importam para o seu objetivo?",opts:["Não sei quais métricas acompanhar","Olho curtidas e seguidores, mas não vou além disso","Conheço algumas métricas relevantes e já as acompanho","Sim, tenho KPIs definidos por objetivo e os analiso com regularidade"]},
+  {block:"Dados e relatórios",q:"Você já tomou uma decisão estratégica baseada em dados?",opts:["Nunca — minhas decisões são por intuição","Raramente, e quando acontece é por acidente","Algumas vezes, mas ainda não é um hábito","Sim, dados são parte central do meu processo de decisão"]},
+  {block:"Dados e relatórios",q:"Você produz relatórios ou registros do desempenho do seu trabalho criativo?",opts:["Nunca produzi nenhum relatório","Já tentei, mas não mantive o hábito","Tenho registros básicos, mas ainda sem estrutura sólida","Sim, produzo relatórios periódicos com análise e próximos passos"]},
+  {block:"Dados e relatórios",q:"Como você usa os resultados para melhorar o que produz?",opts:["Não uso — não tenho esse hábito","Às vezes mudo algo quando percebo que não funcionou","Faço ajustes com base no que observo, mas sem processo definido","Tenho um ciclo contínuo de análise, aprendizado e melhoria baseado em dados"]},
+  {block:"Gestão de formatos",q:"Dentro de uma mesma plataforma, você varia os formatos de conteúdo (ex: reels, carrossel, stories, lives)?",opts:["Não, uso sempre o mesmo formato","Vario de vez em quando, mas sem critério","Vario com alguma frequência, mas ainda de forma intuitiva","Sim, tenho uma estratégia de mix de formatos por plataforma com objetivos por formato"]},
+  {block:"Gestão de formatos",q:"Você sabe qual formato performa melhor para cada objetivo (alcance, engajamento, conversão)?",opts:["Não tenho essa clareza","Tenho uma percepção geral, mas sem dados que confirmem","Já identifiquei alguns padrões e os uso como referência","Sim, tenho mapeamento claro de formato x objetivo com base em dados reais"]},
+  {block:"Gestão de formatos",q:"Como você reaproveita um conteúdo em diferentes formatos dentro da mesma plataforma?",opts:["Não reaproveito — cada conteúdo é criado do zero","Às vezes adapto algo, mas sem processo","Tenho o hábito de reaproveitar em alguns casos","Tenho um fluxo definido de reaproveitamento e repaginação de conteúdo por formato"]},
+  {block:"Perfil operacional",q:"Quantas contas ou perfis digitais você gerencia atualmente?",opts:["Apenas 1 conta","2 a 3 contas","4 a 6 contas","7 ou mais contas"]},
+  {block:"Perfil operacional",q:"Quais funções você acumula no trabalho criativo? (escolha a que mais se aproxima)",opts:["Faço tudo sozinho — social media, edição, design e texto","Acumulo 2 ou 3 funções, mas há alguém que me ajuda em alguma delas","Tenho função principal definida, mas ainda ajudo em outras quando necessário","Tenho função específica e bem delimitada dentro de uma equipe"]},
+  {block:"Perfil operacional",q:"Você tem clareza sobre qual é a sua função principal no processo criativo?",opts:["Não, faço o que aparece","Tenho uma ideia, mas não está formalizado","Sei qual é minha função, mas ainda me perco em tarefas que não são minhas","Sim, minha função é clara, documentada e respeitada pelo time"]},
+  {block:"Calendário integrado",q:"Você considera datas do calendário gospel ou litúrgico (ex: Páscoa, Natal, avivamentos, congressos) no seu planejamento editorial?",opts:["Não, não costumo considerar isso","Às vezes lembro de datas importantes, mas sem antecedência","Tenho algumas datas mapeadas, mas não é um processo sistemático","Sim, tenho calendário gospel integrado ao editorial com antecedência de pelo menos 30 dias"]},
+  {block:"Calendário integrado",q:"Como você conecta o calendário editorial ao calendário de eventos ou campanhas da sua organização?",opts:["Não há conexão — são planejamentos separados","Alinho pontualmente quando lembro","Existe alguma integração, mas ainda há muitos gaps","Tenho calendário unificado onde editorial, eventos e campanhas se alimentam mutuamente"]},
+  {block:"Estrutura de time",q:"Quantas pessoas atuam na sua equipe de comunicação ou criação de conteúdo?",opts:["Sou solo — faço tudo sozinho","2 a 3 pessoas (incluindo eu)","4 a 6 pessoas","7 ou mais pessoas"]},
+  {block:"Estrutura de time",q:"As funções da sua equipe são claramente divididas e cada pessoa sabe exatamente o que é responsável?",opts:["Não há divisão — cada um faz o que dá","Existe uma divisão informal, mas há muito sobreposição de tarefas","Há divisão básica de funções, mas ainda falta clareza em alguns pontos","Sim, cada pessoa tem função documentada, entregas definidas e responsabilidade clara"]}
+];
+
+const levels = [
+  {name:"Aprendiz",color:"#D3D1C7",textColor:"#2C2C2A",badge:"Nível 1",desc:"Você está no início da jornada — e isso é ótimo! A maioria das pessoas neste estágio age por intuição, sem estratégia definida. O próximo passo é entender que intencionalidade faz toda a diferença.",steps:[{t:"Comece com um bloco",d:"Escolha um dos 9 temas do quiz e foque nele por 30 dias antes de ampliar."},{t:"Documente o que você faz",d:"Crie um caderno ou planilha simples com o que você publica e quando."},{t:"Estude referências",d:"Mapeie 3 criadores gospel que admira e observe a estratégia deles."}]},
+  {name:"Operador",color:"#B5D4F4",textColor:"#0C447C",badge:"Nível 2",desc:"Você executa, mas ainda está no piloto automático. Tem consistência em alguns pontos, mas falta visão do conjunto. O desafio agora é sair do modo reativo e começar a planejar com intenção.",steps:[{t:"Monte seu calendário editorial",d:"Planeje pelo menos 2 semanas de conteúdo com antecedência, incluindo datas gospel relevantes."},{t:"Escolha 2 métricas para acompanhar",d:"Comece simples: alcance e engajamento. Registre semanalmente."},{t:"Teste um formato novo por mês",d:"Explore o que ainda não tentou — vídeo longo, podcast, e-book curto."}]},
+  {name:"Explorador",color:"#9FE1CB",textColor:"#085041",badge:"Nível 3",desc:"Você já testa, questiona e experimenta — isso é muito valioso. Mas a falta de consistência ainda limita seus resultados. O momento agora é transformar aprendizados em processos.",steps:[{t:"Documente o que funciona",d:"Crie um banco de conteúdos de alto desempenho e identifique padrões de formato e tema."},{t:"Integre online e offline",d:"Planeje como seus eventos e ações presenciais alimentam o digital e vice-versa."},{t:"Crie sua primeira oferta",d:"Mesmo que simples, estruture algo que possa gerar valor e receita para sua audiência."}]},
+  {name:"Produtor",color:"#CECBF6",textColor:"#3C3489",badge:"Nível 4",desc:"Você domina as ferramentas e gera resultados consistentes. Já tem processos, mas agora o desafio é escalar com propósito — e começar a pensar em formar outros.",steps:[{t:"Estruture seu funil completo",d:"Revise cada etapa da jornada do seu público, da descoberta à conversão."},{t:"Automatize o que for possível",d:"Identifique tarefas repetitivas e use ferramentas para ganhar tempo estratégico."},{t:"Invista em formação de equipe",d:"Delegue para crescer — um voluntário bem orientado multiplica seu impacto."}]},
+  {name:"Estrategista",color:"#F5C4B3",textColor:"#712B13",badge:"Nível 5",desc:"Você pensa em escala, forma outros e gera impacto real. Está no topo da jornada — mas o verdadeiro estrategista nunca para de aprender. Seu papel agora é abrir caminho para quem vem depois.",steps:[{t:"Compartilhe o que sabe",d:"Crie conteúdo educativo que forme outros criadores no gospel."},{t:"Meça impacto além do alcance",d:"Defina métricas de transformação real — vidas, comunidades, missão."},{t:"Construa legado",d:"Pense em sistemas que funcionem sem depender exclusivamente de você."}]}
+];
+
+let answers = new Array(questions.length).fill(null);
+let current = 0;
+
+function startQuiz(){
+  document.getElementById('intro-screen').style.display='none';
+  document.getElementById('quiz-screen').style.display='block';
+  render();
+}
+
+function render(){
+  const q = questions[current];
+  document.getElementById('block-tag').textContent = q.block;
+  document.getElementById('qtext').textContent = q.q;
+  const wrap = document.getElementById('options-wrap');
+  wrap.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const b = document.createElement('button');
+    b.className='option-btn'+(answers[current]===i?' selected':'');
+    b.textContent=o;
+    b.onclick=()=>select(i);
+    wrap.appendChild(b);
+  });
+  const pct=Math.round(((current+1)/questions.length)*100);
+  document.getElementById('pbar').style.width=pct+'%';
+  document.getElementById('plabel').textContent=`Pergunta ${current+1} de ${questions.length}`;
+  document.getElementById('btn-prev').disabled=current===0;
+  const isLast=current===questions.length-1;
+  const nb=document.getElementById('btn-next');
+  nb.textContent=isLast?'Ver resultado →':'Próxima →';
+  nb.disabled=answers[current]===null;
+}
+
+function select(i){
+  answers[current]=i;
+  document.querySelectorAll('.option-btn').forEach((b,idx)=>{
+    b.className='option-btn'+(idx===i?' selected':'');
+  });
+  document.getElementById('btn-next').disabled=false;
+}
+
+function go(dir){
+  if(dir===1&&current===questions.length-1){showResult();return;}
+  current=Math.max(0,Math.min(questions.length-1,current+dir));
+  render();
+}
+
+function showResult(){
+  const total=answers.reduce((s,a)=>s+(a===null?0:a),0);
+  const max=questions.length*3;
+  const pct=total/max;
+  let lvl=pct<0.2?0:pct<0.4?1:pct<0.6?2:pct<0.8?3:4;
+  const l=levels[lvl];
+  document.getElementById('quiz-screen').style.display='none';
+  const rs=document.getElementById('result-screen');
+  const segs=[0,1,2,3,4].map(i=>`<div class="score-seg" style="background:${i<=lvl?l.color:'#F1EFE8'}"></div>`).join('');
+  const names=levels.map(lv=>`<div class="score-name">${lv.name}</div>`).join('');
+  const steps=l.steps.map(s=>`<div class="step-card"><strong>${s.t}</strong><p>${s.d}</p></div>`).join('');
+  rs.innerHTML=`
+    <div class="result-wrap">
+      <div class="result-badge" style="background:${l.color};color:${l.textColor}">${l.badge} — ${l.name}</div>
+      <div class="result-title">Você é um ${l.name}</div>
+      <div class="result-desc">${l.desc}</div>
+      <div class="score-bar-wrap">
+        <div class="score-levels">${segs}</div>
+        <div class="score-names">${names}</div>
+      </div>
+      <hr class="divider">
+      <div class="steps-title">Seus próximos passos</div>
+      <div>${steps}</div>
+      <hr class="divider">
+      <div class="email-box">
+        <h3>Receba seu diagnóstico completo por e-mail</h3>
+        <p>Enviaremos um PDF com seu resultado, próximos passos e recursos exclusivos para criadores gospel.</p>
+        <div class="email-fields">
+          <input type="text" id="cap-name" placeholder="Seu nome"/>
+          <input type="email" id="cap-email" placeholder="Seu melhor e-mail"/>
+        </div>
+        <div class="cap-error" id="cap-error">Por favor, preencha nome e e-mail válidos.</div>
+        <button class="btn-email" onclick="submitEmail()">Quero receber meu diagnóstico →</button>
+        <div class="cap-success" id="cap-success">Perfeito! Em breve você receberá seu diagnóstico completo.</div>
+      </div>
+      <button class="btn-restart" onclick="restart()">Refazer o quiz</button>
+    </div>`;
+  rs.style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function submitEmail(){
+  const name=document.getElementById('cap-name').value.trim();
+  const email=document.getElementById('cap-email').value.trim();
+  const err=document.getElementById('cap-error');
+  const ok=document.getElementById('cap-success');
+  const valid=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if(!name||!valid){err.style.display='block';return;}
+  err.style.display='none';
+  document.getElementById('cap-name').disabled=true;
+  document.getElementById('cap-email').disabled=true;
+  ok.style.display='block';
+  // Aqui você conecta ao seu serviço de e-mail marketing (ex: Mailchimp, RD Station, ActiveCampaign)
+  // Exemplo: fetch('SUA_URL_WEBHOOK', {method:'POST', body: JSON.stringify({name, email})})
+}
+
+function restart(){
+  answers=new Array(questions.length).fill(null);
+  current=0;
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('intro-screen').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

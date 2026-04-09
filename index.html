@@ -240,7 +240,16 @@ function submitEmail(){
   const badgeEl=document.querySelector('.result-badge');
   const badge=badgeEl?badgeEl.textContent:'';
   const blockScores=getBlockScores();
-  const blocksHtml=Object.keys(blockScores).map(b=>'<tr><td style="padding:6px 0;color:#888;font-size:13px">'+b+'</td><td style="padding:6px 0;font-size:13px;font-weight:600;color:#3C3489;text-align:right">'+blockScores[b]+'</td></tr>').join('');
+  const blockPcts={};
+  const bk={};const bkc={};
+  questions.forEach((q,i)=>{const b=q.block;if(!bk[b]){bk[b]=0;bkc[b]=0;}bk[b]+=(answers[i]===null?0:answers[i]);bkc[b]++;});
+  Object.keys(bk).forEach(b=>{blockPcts[b]=Math.round((bk[b]/(bkc[b]*3))*100);});
+  const blocksHtml=Object.keys(blockPcts).map(b=>{
+    const p=blockPcts[b];
+    const color=p<25?'#D3D1C7':p<50?'#B5D4F4':p<75?'#9FE1CB':p<90?'#CECBF6':'#F5C4B3';
+    const label=p<25?'Aprendiz':p<50?'Operador':p<75?'Explorador':p<90?'Produtor':'Estrategista';
+    return '<div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#555">'+b+'</span><span style="font-size:12px;color:#888">'+label+' · '+p+'%</span></div><div style="background:#F1EFE8;border-radius:99px;height:10px;width:100%"><div style="background:'+color+';height:10px;border-radius:99px;width:'+p+'%"></div></div></div>';
+  }).join('');
   const printWin=window.open('','_blank');
   printWin.document.write('<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"/><title>Diagnóstico — '+level+'</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:"Segoe UI",sans-serif;background:#fff;color:#1a1a1a;padding:48px 56px;max-width:720px;margin:0 auto}.badge{display:inline-block;background:#CECBF6;color:#3C3489;padding:4px 16px;border-radius:99px;font-size:13px;font-weight:600;margin-bottom:16px}h1{font-size:28px;font-weight:700;margin-bottom:8px}.desc{font-size:15px;color:#555;line-height:1.7;margin-bottom:24px}.divider{border:none;border-top:1px solid #eee;margin:24px 0}.section-title{font-size:15px;font-weight:700;margin-bottom:16px;color:#1a1a1a}.name-line{font-size:14px;color:#888;margin-bottom:24px}.footer{margin-top:40px;font-size:12px;color:#aaa;text-align:center}table{width:100%;border-collapse:collapse}@media print{body{padding:32px}}</style></head><body><div class="badge">'+badge+'</div><h1>'+level+'</h1><div class="name-line">Diagnóstico de '+name+'</div><div class="desc">'+desc+'</div><hr class="divider"/><div class="section-title">Seus próximos passos</div>'+stepsHtml+'<hr class="divider"/><div class="section-title">Score por bloco temático</div><table>'+blocksHtml+'</table><hr class="divider"/><div class="footer">Quiz Estratégia Digital Gospel</div></body></html>');
   printWin.document.close();

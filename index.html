@@ -233,8 +233,11 @@ function submitEmail(){
   document.getElementById('cap-name').disabled=true;
   document.getElementById('cap-email').disabled=true;
   ok.style.display='block';
-  // Aqui você conecta ao seu serviço de e-mail marketing (ex: Mailchimp, RD Station, ActiveCampaign)
-  // Exemplo: fetch('SUA_URL_WEBHOOK', {method:'POST', body: JSON.stringify({name, email})})
+      fetch('https://formspree.io/f/xqegojye', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name, email, level: document.querySelector('.result-title').textContent})
+    });
 }
 
 function restart(){
